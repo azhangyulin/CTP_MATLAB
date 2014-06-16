@@ -1,4 +1,3 @@
-function [md, td] = CTPConnect(Inifile, servername)
 %CTPCONNECT is used to connect CTP server function.
 %   Usage: 
 %       [MD, TD] = CTPCONNECT(inifile, serverName); 
@@ -10,11 +9,11 @@ function [md, td] = CTPConnect(Inifile, servername)
 %       Like this: tdserver, mdserver, brokerid, investorid, password, path
 
 % import C# DLL
-%cd(cdpath);
+% cd(cdpath); 
 NET.addAssembly(fullfile(cd,'QuantBox.CSharp2CTP.dll'));
 import QuantBox.CSharp2CTP.*;
-
-
+Inifile = 'server.ini';
+servername = 'simServer';
 % get data
 path = inifile(Inifile, 'read', {servername, '', 'path'});
 tdserver = inifile(Inifile, 'read', {servername, '', 'tdserver'});
@@ -42,3 +41,5 @@ addlistener(td,'OnDisconnect',@OnTdDisconnect);
 addlistener(td,'OnRtnOrder',@OnRtnOrder);
 addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
 td.Connect([cd, path], tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
+
+clear path tdserver mdserver brokerid investorid password ans Inifile servername
