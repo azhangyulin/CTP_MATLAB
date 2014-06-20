@@ -36,13 +36,13 @@ md =  MdApiWrapper();
 addlistener(md,'OnConnect',@OnMdConnect);
 addlistener(md,'OnDisconnect',@OnMdDisconnect);
 addlistener(md,'OnRtnDepthMarketData',@OnRtnDepthMarketData);
-md.Connect([cd, path], mdserver, brokerid, investorid, password);
+md.Connect(fullfile(cd, path), mdserver, brokerid, investorid, password);
 % connect td
 td = TraderApiWrapper();
 addlistener(td,'OnConnect',@OnTdConnect);
 addlistener(td,'OnDisconnect',@OnTdDisconnect);
 addlistener(td,'OnRtnOrder',@OnRtnOrder);
 addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
-td.Connect([cd, path], tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
+td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
 
 clear path tdserver mdserver brokerid investorid password ans Inifile servername

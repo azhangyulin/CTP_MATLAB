@@ -1,0 +1,7 @@
+*.asv
+*.pdb
+*.tlb
+*.exp
+*.ilk
+*.lib
+stream/
