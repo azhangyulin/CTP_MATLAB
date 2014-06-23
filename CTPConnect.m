@@ -3,15 +3,21 @@
 %           CTPCONNECT;
 %           Connect the CTP server then return md & td
 %           You can edit this file's global name: Inifile & servername to
-%           modify the connection info; and do not modify other code;
+%           modify the connection infomation; and do not modify other code;
 %   Warning:
 %       The inifile's server section must contain all information
 %       Like this: tdserver, mdserver, brokerid, investorid, password, path
+%   Author: jebin @ 2014/6/10
+%   Email: cepinlin@gmail.com
 
 %You can change this
-global md td;
 Inifile = 'server.ini';
 servername = 'simServer';
+
+global md td orders orderNum orderRef;
+orders = {};
+orderNum = 0;
+orderRef = {};
 
 % import C# DLL
 % cd(cdpath); 
@@ -44,6 +50,7 @@ addlistener(td,'OnConnect',@OnTdConnect);
 addlistener(td,'OnDisconnect',@OnTdDisconnect);
 addlistener(td,'OnRtnOrder',@OnRtnOrder);
 addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
+addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
 td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
 
 clear path tdserver mdserver brokerid investorid password ans Inifile servername
