@@ -9,6 +9,7 @@
 %       Like this: tdserver, mdserver, brokerid, investorid, password, path
 
 %You can change this
+global md td;
 Inifile = 'server.ini';
 servername = 'simServer';
 
