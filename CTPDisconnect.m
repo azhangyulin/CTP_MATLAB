@@ -6,3 +6,4 @@ end
 md.Disconnect;
 td.Disconnect;
 clear global;
+disp('断开连接成功');
