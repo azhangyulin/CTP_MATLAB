@@ -1,7 +1,7 @@
 function SendOrder(Instrument, Direction, Offsetflag, Volume, Price)
 %ÏÂµ¥
 global td;
-if(~exist('td', 'var'))
+if(isempty(td))
     error('trader not connect');
 end
 

@@ -14,9 +14,9 @@
 Inifile = 'server.ini';
 servername = 'simServer';
 
-global md td orders orderNum orderRef;
+global md td orders orderRef instruments;
+instruments = {};
 orders = {};
-orderNum = 0;
 orderRef = {};
 
 % import C# DLL
@@ -50,7 +50,9 @@ addlistener(td,'OnConnect',@OnTdConnect);
 addlistener(td,'OnDisconnect',@OnTdDisconnect);
 addlistener(td,'OnRtnOrder',@OnRtnOrder);
 addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
-addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
+addlistener(td, 'OnRspOrderInsert', @OnRspOrderInsert);
+addlistener(td, 'OnRspOrderAction', @OnRspOrderAction);
+% addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
 td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
 
 clear path tdserver mdserver brokerid investorid password ans Inifile servername

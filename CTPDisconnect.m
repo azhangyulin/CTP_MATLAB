@@ -1,9 +1,8 @@
-if(~exist('md', 'var') || ~exist('td', 'var'))
+
+global md td;
+if(isempty(md) || isempty(td))
     error('CTP not connect');
 end
-global md td;
-
 md.Disconnect;
 td.Disconnect;
-clear md td orders orderNum orderRef;
-clc;
+clear global;
