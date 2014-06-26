@@ -1,12 +1,19 @@
 function CancelOrder(pOrder)
 %CANCELORDER 撤单
-global td;
+global td hCTPGUI;
 if(isempty(td))
-    error('未连接行情端');
+    if(isempty(hCTPGUI))
+        set(hCTPGUI.FailText, 'String', '未连接行情端');
+    else
+        warning('未连接行情端');
+    end
+    
+else
+    td.CancelOrder(pOrder);
+    ind = strcmp(orderRef, char(pOrder.OrderRef));
+    orderRef{ind} = [];
+    orders{ind} = [];
 end
-td.CancelOrder(pOrder);
-ind = strcmp(orderRef, char(pOrder.OrderRef));
-orderRef{ind} = [];
-orders{ind} = [];
+
 end
 

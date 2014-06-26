@@ -5,20 +5,27 @@ function Unsubscribe(instrument)
 %           订阅所有合约行情
 %       UNSUBSCRIBE('instrument1, instrument2, ');
 %           订阅指定合约行情，用逗号或者分号隔开
-    global md instruments;
+    global md instruments hCTPGUI;
     if(isempty(md))
-        error('CTP md not connect');
-    end
-    
-    
-    if(strcmpi(instrument, 'all'))
-        if(isempty(instruments))
-            error('未获取所有合约');
+        if(isempty(hCTPGUI))
+            warning('未连接到CTP');
+        else
+            set(hCTPGUI.FailText, 'String', '未连接到CTP');
         end
-        cellfun(@(x) md.Unsubscribe(char(x.InstrumentID)), instruments, 'UniformOutput', false);
     else
-        md.Unsubscribe(instrument);
+        if(strcmpi(instrument, 'all'))
+            if(isempty(instruments))
+                if(isempty(hCTPGUI))
+                    warning('未获取所有合约');
+                else
+                    set(hCTPGUI.FailText, 'String', '未获取所有合约');
+                end
+            else
+                 cellfun(@(x) md.Unsubscribe(char(x.InstrumentID)), instruments, 'UniformOutput', false);
+            end
+        else
+            md.Unsubscribe(instrument);
+        end
     end
-
 end
 

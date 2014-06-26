@@ -14,45 +14,53 @@
 Inifile = 'server.ini';
 servername = 'simServer';
 
-global md td orders orderRef instruments;
+global md td orders orderRef instruments hCTPGUI;
 instruments = {};
 orders = {};
 orderRef = {};
+if(~isempty(md) || ~isempty(td))
+    if(isempty(hCTPGUI))
+        warning('CTP已经连接');
+    else
+        set(hCTPGUI.FailText, 'String', 'CTP已经连接');
+    end
+    
+else
+    % import C# DLL
+    % cd(cdpath); 
+    NET.addAssembly(fullfile(cd,'QuantBox.CSharp2CTP.dll'));
+    import QuantBox.CSharp2CTP.*;
 
-% import C# DLL
-% cd(cdpath); 
-NET.addAssembly(fullfile(cd,'QuantBox.CSharp2CTP.dll'));
-import QuantBox.CSharp2CTP.*;
+    % get data
+    path = inifile(Inifile, 'read', {servername, '', 'path'});
+    tdserver = inifile(Inifile, 'read', {servername, '', 'tdserver'});
+    mdserver = inifile(Inifile, 'read', {servername, '', 'mdserver'});
+    brokerid = inifile(Inifile, 'read', {servername, '', 'brokerid'});
+    investorid = inifile(Inifile, 'read', {servername, '', 'investorid'});
+    password = inifile(Inifile, 'read', {servername, '', 'password'});
+    path = path{1,1};
+    tdserver = tdserver{1,1};
+    mdserver = mdserver{1,1};
+    brokerid = brokerid{1,1};
+    investorid = investorid{1,1};
+    password = password{1,1};
 
-% get data
-path = inifile(Inifile, 'read', {servername, '', 'path'});
-tdserver = inifile(Inifile, 'read', {servername, '', 'tdserver'});
-mdserver = inifile(Inifile, 'read', {servername, '', 'mdserver'});
-brokerid = inifile(Inifile, 'read', {servername, '', 'brokerid'});
-investorid = inifile(Inifile, 'read', {servername, '', 'investorid'});
-password = inifile(Inifile, 'read', {servername, '', 'password'});
-path = path{1,1};
-tdserver = tdserver{1,1};
-mdserver = mdserver{1,1};
-brokerid = brokerid{1,1};
-investorid = investorid{1,1};
-password = password{1,1};
+    % connect md
+    md =  MdApiWrapper();
+    addlistener(md,'OnConnect',@OnMdConnect);
+    addlistener(md,'OnDisconnect',@OnMdDisconnect);
+    addlistener(md,'OnRtnDepthMarketData',@OnRtnDepthMarketData);
+    md.Connect(fullfile(cd, path), mdserver, brokerid, investorid, password);
+    % connect td
+    td = TraderApiWrapper();
+    addlistener(td,'OnConnect',@OnTdConnect);
+    addlistener(td,'OnDisconnect',@OnTdDisconnect);
+    addlistener(td,'OnRtnOrder',@OnRtnOrder);
+    addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
+    addlistener(td, 'OnRspOrderInsert', @OnRspOrderInsert);
+    addlistener(td, 'OnRspOrderAction', @OnRspOrderAction);
+    % addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
+    td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
 
-% connect md
-md =  MdApiWrapper();
-addlistener(md,'OnConnect',@OnMdConnect);
-addlistener(md,'OnDisconnect',@OnMdDisconnect);
-addlistener(md,'OnRtnDepthMarketData',@OnRtnDepthMarketData);
-md.Connect(fullfile(cd, path), mdserver, brokerid, investorid, password);
-% connect td
-td = TraderApiWrapper();
-addlistener(td,'OnConnect',@OnTdConnect);
-addlistener(td,'OnDisconnect',@OnTdDisconnect);
-addlistener(td,'OnRtnOrder',@OnRtnOrder);
-addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
-addlistener(td, 'OnRspOrderInsert', @OnRspOrderInsert);
-addlistener(td, 'OnRspOrderAction', @OnRspOrderAction);
-% addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
-td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
-
-clear path tdserver mdserver brokerid investorid password ans Inifile servername
+    clear path tdserver mdserver brokerid investorid password ans Inifile servername
+end
