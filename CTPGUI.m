@@ -22,7 +22,7 @@ function varargout = CTPGUI(varargin)
 
 % Edit the above text to modify the response to help CTPGUI
 
-% Last Modified by GUIDE v2.5 24-Jun-2014 20:18:13
+% Last Modified by GUIDE v2.5 25-Jun-2014 16:03:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -44,23 +44,12 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before CTPGUI is made visible.
 function CTPGUI_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to CTPGUI (see VARARGIN)
-
-% Choose default command line output for CTPGUI
 handles.output = hObject;
-
-% Update handles structure
 guidata(hObject, handles);
-
-% UIWAIT makes CTPGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
+CTPConnect;
+global hCTPGUI;
+hCTPGUI = handles;
 
 % --- Outputs from this function are returned to the command line.
 function varargout = CTPGUI_OutputFcn(hObject, eventdata, handles) 
@@ -72,58 +61,27 @@ function varargout = CTPGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
-% --- Executes on button press in CTPConnectButton.
-function CTPConnectButton_Callback(hObject, eventdata, handles)
-% hObject    handle to CTPConnectButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-CTPConnect;
-
-
-% --- Executes on button press in CTPDisconnect.
-function CTPDisconnect_Callback(hObject, eventdata, handles)
-% hObject    handle to CTPDisconnect (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-CTPDisconnect;
-
-
-% --- Executes on button press in SubscribeButton.
 function SubscribeButton_Callback(hObject, eventdata, handles)
-% hObject    handle to SubscribeButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 inst = get(handles.InstEditor, 'String');
 Subscribe(inst);
 
 
 function InstEditor_Callback(hObject, eventdata, handles)
-% hObject    handle to InstEditor (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-inst = get(hObject, 'String');
-disp(inst);
-% Hints: get(hObject,'String') returns contents of InstEditor as text
-%        str2double(get(hObject,'String')) returns contents of InstEditor as a double
 
-
-% --- Executes during object creation, after setting all properties.
 function InstEditor_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to InstEditor (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-% --- Executes on button press in GetInstrumentsBotton.
+
 function GetInstrumentsBotton_Callback(hObject, eventdata, handles)
-% hObject    handle to GetInstrumentsBotton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 GetInstruments('');
+
+function UnsubscribeButton_Callback(hObject, eventdata, handles)
+inst = get(handles.InstEditor, 'String');
+Unsubscribe(inst);
+
+
+function CTPGUI_DeleteFcn(hObject, eventdata, handles)
+CTPDisconnect;
