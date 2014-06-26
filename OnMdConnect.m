@@ -3,10 +3,11 @@ function OnMdConnect(sender,arg)
 global hCTPGUI;
 if arg.result == QuantBox.CSharp2CTP.ConnectionStatus.E_logined
     
-    if(isempty(hCTPGUI))
-        disp('行情端已连接');
-    else
+    if(IsGUI)
+        
         set(hCTPGUI.MdConnection, 'String', '行情端已连接');
+    else
+        disp('行情端已连接');
     end
 end
 

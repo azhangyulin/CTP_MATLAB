@@ -14,12 +14,13 @@
 Inifile = 'server.ini';
 servername = 'simServer';
 
-global md td orders orderRef instruments hCTPGUI;
+global md td orders orderRef instruments hCTPGUI positions;
 instruments = {};
 orders = {};
 orderRef = {};
-if(~isempty(md) || ~isempty(td))
-    if(isempty(hCTPGUI))
+positions = {};
+if(IsConnect)
+    if(~IsGUI)
         warning('CTP已经连接');
     else
         set(hCTPGUI.FailText, 'String', 'CTP已经连接');
@@ -59,6 +60,7 @@ else
     addlistener(td, 'OnRspQryInstrument', @OnRspQryInstrument);
     addlistener(td, 'OnRspOrderInsert', @OnRspOrderInsert);
     addlistener(td, 'OnRspOrderAction', @OnRspOrderAction);
+    addlistener(td, 'OnRspQryInvestorPosition', @OnRspQryInvestorPosition);
     % addlistener(td, 'OnErrRtnOrderInsert', @OnErrRtnOrderInsert);
     td.Connect(fullfile(cd, path), tdserver, brokerid, investorid, password, THOST_TE_RESUME_TYPE.THOST_TERT_QUICK, '', '');
 

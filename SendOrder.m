@@ -1,15 +1,7 @@
 function SendOrder(Instrument, Direction, Offsetflag, Volume, Price)
 %下单
 global td hCTPGUI;
-if(isempty(td))
-    if(isempty(hCTPGUI))
-        warning('未连接交易端');
-    else
-        set(hCTPGUI.FailText, 'String', '未连接交易端');
-    end
-    
-    
-else
+if(IsConnect)
     td.SendOrder(Instrument, ...
                         Direction, ...
                         Offsetflag, ...
@@ -21,6 +13,14 @@ else
                         QuantBox.CSharp2CTP.TThostFtdcContingentConditionType.Immediately,...
                         0, ...
                         QuantBox.CSharp2CTP.TThostFtdcVolumeConditionType.AV);
+    
+    
+else
+     if(IsGUI)
+        set(hCTPGUI.FailText, 'String', '未连接交易端');
+    else
+        warning('未连接交易端');
+    end
 end
 
 

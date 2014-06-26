@@ -1,7 +1,7 @@
 
 global md td hCTPGUI;
-if(isempty(md) || isempty(td))
-    if(isempty(hCTPGUI))
+if(~IsConnect)
+    if(~IsGUI)
         warning('未连接到CTP');
     else
         set(hCTPGUI.FailText, 'String', '未连接到CTP');

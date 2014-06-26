@@ -5,9 +5,10 @@ function OnTdConnect(sender,arg)
 global hCTPGUI;
 if arg.result == QuantBox.CSharp2CTP.ConnectionStatus.E_confirmed
 %     disp('交易端已连接');
-    if(isempty(hCTPGUI))
-        disp('交易端已连接');
-    else
+    if(IsGUI)
+       
         set(hCTPGUI.TdConnection, 'String', '交易端已连接');
+    else
+        disp('交易端已连接');
     end
 end
